@@ -1,28 +1,24 @@
 #pragma once
 
-enum Direction
-{
-    DOWN = 0,
+#define BOARD_SIZE 16
+#define TILE_BAG_SIZE 100
+#define USER_TILES_SIZE 7
 
-    RIGHT = 1
-};
-enum Multiplier
+enum DIRECTION
 {
-    ONE = 1,
-    TWO = 2,
-    THREE = 3,
-    WTWO = 4,  // for "*"
-    WTHREE = 5 // for "!"
+    down = 0,
+
+    right = 1
 };
 
-/// @brief Representation of a word. Has x and y coordinates aswell as direction and the word
 typedef struct
 {
     int x;
     int y;
-    enum Direction dire;
+    enum DIRECTION dire;
     char word[50];
 } Word;
+
 typedef struct
 {
     char c;
@@ -30,9 +26,10 @@ typedef struct
     int lm;
     int wm;
 } Letter;
+
 typedef struct
 {
-    Letter tiles[7];
+    Letter tiles[USER_TILES_SIZE];
     int ptr;
     char name[20];
     int total_points;

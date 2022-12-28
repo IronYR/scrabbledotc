@@ -4,34 +4,18 @@
 #include <time.h>
 #include <stdbool.h>
 #include <ctype.h>
-#include "defs.h"
-#include "colors.h"
-#include "board.h"
-#include "prototypes.h"
+#include "defs.h"       // contains type definitions, enums, and macros
+#include "colors.h"     // contains the different colors
+#include "board.h"      // contains functions related to the board
+#include "prototypes.h" // contains function prototypes
+
 /*******************************************************************************************************************************************
                                                             Initialization
 ********************************************************************************************************************************************/
 
-Letter board[16][16];
-Letter TileBag[100];
-int NumTiles = 100;
-
-Letter CurrentWord[16];
-int k = 0;
-Letter CurrentSubWord[16];
-int r = 0;
-
-int TotalPoints;
-bool exists;
-
-Player playerArr[4];
-
-static FILE *fp;
-
-Letter OldBoard[16][16];
-
-int tempTileptr;
-Letter tempTileArray[7];
+Letter board[BOARD_SIZE][BOARD_SIZE];
+Letter TileBag[TILE_BAG_SIZE];
+int NumTiles = TILE_BAG_SIZE;
 
 /***********************************************************************************************************************
                                                             MAIN
@@ -47,7 +31,7 @@ Letter tempTileArray[7];
 int main()
 {
     int p;
-    printf("How many players would like to play?\n");
+    printf("How many players(2-4) would like to play?\n");
     scanf_s("%d", &p);
     playScrabble(p);
     declareWinner(p);
@@ -92,9 +76,9 @@ int calculatePointsWord(Letter word[], int length)
  */
 void resetFlags()
 {
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < BOARD_SIZE; i++)
     {
-        for (int j = 0; j < 16; j++)
+        for (int j = 0; j < BOARD_SIZE; j++)
         {
             board[i][j].lm = 1;
             board[i][j].wm = 1;
@@ -290,6 +274,11 @@ Word getWord(int i)
     return word;
 }
 
+Letter CurrentWord[16];
+int k = 0;
+Letter CurrentSubWord[16];
+int r = 0;
+
 /**
  * Gets the subword of the board in the y-axis.
  *
@@ -314,7 +303,7 @@ void getSubWordY(int y, int x)
     }
     CurrentSubWord[j] = board[y][x];
     j++;
-    while ((x + j) < 16 && board[y][x + j].c != ' ' && board[y][x + j].c != '!' && board[y][x + j].c != '*' && board[y][x + j].c != '2' && board[y][x + j].c != '3')
+    while ((x + j) < BOARD_SIZE && board[y][x + j].c != ' ' && board[y][x + j].c != '!' && board[y][x + j].c != '*' && board[y][x + j].c != '2' && board[y][x + j].c != '3')
     {
         CurrentSubWord[j] = board[y][x + j];
         j++;
@@ -347,13 +336,17 @@ void getSubWordX(int y, int x)
 
     CurrentSubWord[j] = board[y][x];
     j++;
-    while ((x + j) < 16 && board[y + j][x].c != ' ' && board[y + j][x].c != '!' && board[y + j][x].c != '*' && board[y + j][x].c != '2' && board[y + j][x].c != '3')
+    while ((x + j) < BOARD_SIZE && board[y + j][x].c != ' ' && board[y + j][x].c != '!' && board[y + j][x].c != '*' && board[y + j][x].c != '2' && board[y + j][x].c != '3')
     {
         CurrentSubWord[j] = board[y + j][x];
         j++;
     }
     r = j;
 }
+
+int TotalPoints;
+
+bool exists;
 
 /**
  * Enters word on board.
@@ -372,7 +365,7 @@ int enterWordOnBoard(Word w)
     k = 0;
     switch (w.dire)
     {
-    case RIGHT:
+    case right:
         while ((w.x - k - 1) != 0 && board[w.y][w.x - k - 1].c != ' ' && board[w.y][w.x - k - 1].c != '!' && board[w.y][w.x - k - 1].c != '*' && board[w.y][w.x - k - 1].c != '2' && board[w.y][w.x - k - 1].c != '3')
         {
             k++;
@@ -416,7 +409,7 @@ int enterWordOnBoard(Word w)
             k++;
             j++;
         }
-        while ((w.x + k) < 16 && board[w.y][w.x + k].c != ' ' && board[w.y][w.x + k].c != '!' && board[w.y][w.x + k].c != '*' && board[w.y][w.x + k].c != '2' && board[w.y][w.x + k].c != '3')
+        while ((w.x + k) < BOARD_SIZE && board[w.y][w.x + k].c != ' ' && board[w.y][w.x + k].c != '!' && board[w.y][w.x + k].c != '*' && board[w.y][w.x + k].c != '2' && board[w.y][w.x + k].c != '3')
         {
             CurrentWord[k] = board[w.y][w.x + k];
 
@@ -430,7 +423,7 @@ int enterWordOnBoard(Word w)
         TotalPoints = TotalPoints + calculatePointsWord(CurrentWord, k);
         break;
 
-    case DOWN:
+    case down:
         while ((w.y - k - 1) != 0 && board[w.y - k - 1][w.x].c != ' ' && board[w.y - k - 1][w.x].c != '!' && board[w.y - k - 1][w.x].c != '*' && board[w.y - k - 1][w.x].c != '2' && board[w.y - k - 1][w.x].c != '3')
         {
             k++;
@@ -472,7 +465,7 @@ int enterWordOnBoard(Word w)
             k++;
             j++;
         }
-        while ((w.y + k) < 16 && board[w.y + k][w.x].c != ' ' && board[w.y + k][w.x].c != '!' && board[w.y + k][w.x].c != '*' && board[w.y + k][w.x].c != '2' && board[w.y + k][w.x].c != '3')
+        while ((w.y + k) < BOARD_SIZE && board[w.y + k][w.x].c != ' ' && board[w.y + k][w.x].c != '!' && board[w.y + k][w.x].c != '*' && board[w.y + k][w.x].c != '2' && board[w.y + k][w.x].c != '3')
         {
             CurrentWord[k] = board[w.y + k][w.x];
             k++;
@@ -493,6 +486,8 @@ int enterWordOnBoard(Word w)
 /*********************************************************************************************************************
                                                             PLAYER OPERATIONS
 ***********************************************************************************************************************/
+
+Player playerArr[4];
 
 /**
  * Displays the tiles of a player.
@@ -539,7 +534,7 @@ int validateTiles(Word w, int player)
     int found = 0;
     for (int i = 0; i < strlen(w.word) - 1; i++)
     {
-        for (int j = 0; j < 7; j++)
+        for (int j = 0; j < USER_TILES_SIZE; j++)
         {
             if (playerArr[player - 1].tiles[j].c == w.word[i])
             {
@@ -566,18 +561,18 @@ int validateTiles(Word w, int player)
  */
 void removeTiles(Word w, int player)
 {
-    if (strlen(w.word) - 1 == 7)
+    if (strlen(w.word) - 1 == USER_TILES_SIZE)
     {
         playerArr[player - 1].total_points += 50;
     }
     for (int i = 0; i < strlen(w.word) - 1; i++)
     {
-        for (int j = 0; j < 7; j++)
+        for (int j = 0; j < USER_TILES_SIZE; j++)
         {
             if (playerArr[player - 1].tiles[j].c == w.word[i])
             {
 
-                for (int k = j; k < 7; k++)
+                for (int k = j; k < USER_TILES_SIZE; k++)
                 {
                     playerArr[player - 1].tiles[k] = playerArr[player - 1].tiles[k + 1];
                 }
@@ -601,7 +596,7 @@ void removeTiles(Word w, int player)
 void getPlayerTiles(int player)
 {
 
-    while (playerArr[player - 1].ptr != 7 && NumTiles != 0)
+    while (playerArr[player - 1].ptr != USER_TILES_SIZE && NumTiles != 0)
     {
         srand((unsigned)time(NULL));
         int num = rand() % NumTiles;
@@ -618,6 +613,8 @@ void getPlayerTiles(int player)
 /*********************************************************************************************************************************
                                                             WORD VALIDATION
 *********************************************************************************************************************************/
+
+static FILE *fp;
 
 /**
  * Checks if a word exists in the dictionary.
@@ -705,16 +702,18 @@ void closeFile()
                                                             POSITION VALIDATION
 *************************************************************************************************************************/
 
+Letter OldBoard[BOARD_SIZE][BOARD_SIZE];
+
 /**
  * Saves the current state of the board.
  *
  * @returns None
  */
-void saveState()
+void saveStateBoard()
 {
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < BOARD_SIZE; i++)
     {
-        for (int l = 0; l < 16; l++)
+        for (int l = 0; l < BOARD_SIZE; l++)
         {
             OldBoard[i][l] = board[i][l];
         }
@@ -726,11 +725,11 @@ void saveState()
  *
  * @returns None
  */
-void restoreState()
+void restoreStateBoard()
 {
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < BOARD_SIZE; i++)
     {
-        for (int l = 0; l < 16; l++)
+        for (int l = 0; l < BOARD_SIZE; l++)
         {
             board[i][l] = OldBoard[i][l];
         }
@@ -750,7 +749,7 @@ int outOfBounds(Word w)
 
     switch (w.dire)
     {
-    case RIGHT:
+    case right:
 
         for (int i = 0; i < strlen(w.word) - 1; i++)
         {
@@ -763,7 +762,7 @@ int outOfBounds(Word w)
             if (w.x + j > 15)
             {
                 printf("Out of bounds\n");
-                restoreState();
+                restoreStateBoard();
                 return 0;
             }
 
@@ -772,7 +771,7 @@ int outOfBounds(Word w)
 
         break;
 
-    case DOWN:
+    case down:
         for (int i = 0; i < strlen(w.word) - 1; i++)
         {
 
@@ -784,7 +783,7 @@ int outOfBounds(Word w)
             if (w.y + j > 15)
             {
                 printf("Out of bounds\n");
-                restoreState();
+                restoreStateBoard();
                 return 0;
             }
 
@@ -816,7 +815,7 @@ int validatePosition(Word w)
 
         switch (w.dire)
         {
-        case (RIGHT):
+        case (right):
             if (w.y + 1 < 16 && board[w.y + 1][w.x + i].c >= 'A' && board[w.y + 1][w.x + i].c <= 'Z')
                 return 1;
             if (w.y - 1 != 0 && board[w.y - 1][w.x + i].c >= 'A' && board[w.y - 1][w.x + i].c <= 'Z')
@@ -826,7 +825,7 @@ int validatePosition(Word w)
             if (w.x + strlen(w.word) - 1 < 16 && board[w.y][w.x + strlen(w.word) - 1].c >= 'A' && board[w.y][w.x + strlen(w.word) - 1].c <= 'Z')
                 return 1;
             break;
-        case (DOWN):
+        case (down):
             if (w.x + 1 < 16 && board[w.y + i][w.x + 1].c >= 'A' && board[w.y + i][w.x + 1].c <= 'Z')
                 return 1;
             if (w.x - 1 != 0 && board[w.y + i][w.x - 1].c >= 'A' && board[w.y + i][w.x - 1].c <= 'Z')
@@ -857,7 +856,7 @@ int validateFirstWord(Word w)
 {
     switch (w.dire)
     {
-    case RIGHT:
+    case right:
         for (int i = 0; i < strlen(w.word) - 1; i++)
         {
             if (w.x + i == 8 && w.y == 8)
@@ -866,7 +865,7 @@ int validateFirstWord(Word w)
         printf("Invalid first word positioning. Try again\n");
         return 0;
         break;
-    case DOWN:
+    case down:
         for (int i = 0; i < strlen(w.word) - 1; i++)
         {
             if (w.x == 8 && w.y + i == 8)
@@ -878,6 +877,9 @@ int validateFirstWord(Word w)
     }
 }
 
+int tempTileptr;
+Letter tempTileArray[USER_TILES_SIZE];
+
 /**
  * Saves the tiles of a player.
  *
@@ -885,10 +887,10 @@ int validateFirstWord(Word w)
  *
  * @returns None
  */
-void saveTiles(int player)
+void saveStateTiles(int player)
 {
     tempTileptr = playerArr[player].ptr;
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < USER_TILES_SIZE; i++)
     {
         tempTileArray[i] = playerArr[player].tiles[i];
     }
@@ -901,10 +903,10 @@ void saveTiles(int player)
  *
  * @returns None
  */
-void restoreTiles(int player)
+void restoreStateTiles(int player)
 {
     playerArr[player].ptr = tempTileptr;
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < USER_TILES_SIZE; i++)
     {
         playerArr[player].tiles[i] = tempTileArray[i];
     }
@@ -1085,7 +1087,7 @@ void playScrabble(int noPlayers)
 
             m++;
             int validTiles;
-            saveState();
+            saveStateBoard();
 
             do
             {
@@ -1110,7 +1112,7 @@ void playScrabble(int noPlayers)
                 }
                 else
                 {
-                    saveTiles(i);
+                    saveStateTiles(i);
                     removeTiles(w, i + 1);
                     break;
                 }
@@ -1129,13 +1131,13 @@ void playScrabble(int noPlayers)
 
             if (wExists == 0)
             {
-                restoreState();
+                restoreStateBoard();
                 for (int i = 0; i < k; i++)
                 {
                     CurrentWord[i].c = '\0';
                 }
                 k = 0;
-                restoreTiles(i);
+                restoreStateTiles(i);
                 goto play;
             }
             printf("\n");

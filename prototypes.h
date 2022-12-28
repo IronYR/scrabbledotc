@@ -21,14 +21,14 @@ bool wordExists(Letter[], int);
 int openFile();
 void closeFile();
 
-void saveState();
-void restoreState();
+void saveStateBoard();
+void restoreStateBoard();
 int outOfBounds(Word w);
 int validatePosition(Word w);
 int validateFirstWord(Word w);
 
-void saveTiles(int player);
-void restoreTiles(int player);
+void saveStateTiles(int player);
+void restoreStateTiles(int player);
 
 int gameOver(int noPlayers);
 void displayPoints(int noPlayers);

@@ -242,8 +242,8 @@ void initializeTileBag(Letter TileBag[100], int NumTiles)
     TileBag[96].points = 4;
     TileBag[97].c = 'Z';
     TileBag[97].points = 10;
-    TileBag[98].c = '?';
-    TileBag[98].points = 0;
-    TileBag[99].c = '?';
-    TileBag[99].points = 0;
+    TileBag[98].c = 'A';
+    TileBag[98].points = 1;
+    TileBag[99].c = 'O';
+    TileBag[99].points = 1;
 }

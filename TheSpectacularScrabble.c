@@ -7,17 +7,57 @@
 #include "defs.h"
 #include "colors.h"
 #include "board.h"
+#include "prototypes.h"
 /*******************************************************************************************************************************************
-                                                              BOARD & TILEBAG INITIALIZATION
+                                                            Initialization
 ********************************************************************************************************************************************/
-// the two possible directions a word can be placed in on the board
+
+Letter board[16][16];
 Letter TileBag[100];
 int NumTiles = 100;
-Letter board[16][16];
-bool wordExists(Letter[], int);
+
+Letter CurrentWord[16];
+int k = 0;
+Letter CurrentSubWord[16];
+int r = 0;
+
+int TotalPoints;
+bool exists;
+
+Player playerArr[4];
+
+static FILE *fp;
+
+Letter OldBoard[16][16];
+
+int tempTileptr;
+Letter tempTileArray[7];
+
+/***********************************************************************************************************************
+                                                            MAIN
+*************************************************************************************************************************/
+
+/**
+ * Plays scrabble with p players.
+ *
+ * @param p The number of players.
+ *
+ * @returns None
+ */
+int main()
+{
+    int p;
+    printf("how many players would like to play?\n");
+    scanf_s("%d", &p);
+    playScrabble(p);
+    declareWinner(p);
+    return 0;
+}
+
 /*************************************************************************************************************************************
-                                                POINTS CALCULATION
+                                                            POINTS CALCULATION
 ***************************************************************************************************************************************/
+
 /**
  * Calculates the points for a word.
  *
@@ -44,6 +84,12 @@ int calculatePointsWord(Letter word[], int length)
 
     return wordPoints;
 }
+
+/**
+ * Resets the flags for the board.
+ *
+ * @returns None
+ */
 void resetFlags()
 {
     for (int i = 0; i < 16; i++)
@@ -55,9 +101,11 @@ void resetFlags()
         }
     }
 }
+
 /******************************************************************************************************************************
- *                                                       ENTERING CHARACTERS/WORDS
+ *                                                          ENTERING CHARACTERS/WORDS
  ********************************************************************************************************************************/
+
 /**
  * Adds a character to the board.
  *
@@ -241,10 +289,6 @@ Word getWord(int i)
     } while (word.dire != 0 && word.dire != 1);
     return word;
 }
-Letter CurrentWord[16];
-int k = 0;
-Letter CurrentSubWord[16];
-int r = 0;
 
 /**
  * Gets the subword of the board in the y-axis.
@@ -278,6 +322,7 @@ void getSubWordY(int y, int x)
 
     r = j;
 }
+
 /**
  * Gets the subword of the board in the x-axis.
  *
@@ -309,9 +354,7 @@ void getSubWordX(int y, int x)
     }
     r = j;
 }
-int TotalPoints;
 
-bool exists;
 /**
  * Enters word on board.
  *
@@ -461,9 +504,9 @@ int enterWordOnBoard(Word w)
 }
 
 /*********************************************************************************************************************
-                                                PLAYER OPERATIONS
+                                                            PLAYER OPERATIONS
 ***********************************************************************************************************************/
-Player playerArr[4];
+
 /**
  * Displays the tiles of a player.
  *
@@ -495,6 +538,7 @@ void displayPlayerTiles(int playerNo)
     }
     printf("\n\n");
 }
+
 /**
  * Validates the tiles chosen by the player.
  *
@@ -524,6 +568,7 @@ int validateTiles(Word w, int player)
         found = 0;
     }
 }
+
 /**
  * Removes tiles from the player's hand.
  *
@@ -558,6 +603,7 @@ void removeTiles(Word w, int player)
         }
     }
 }
+
 /**
  * Gets the tiles for a player.
  *
@@ -583,9 +629,8 @@ void getPlayerTiles(int player)
 }
 
 /*********************************************************************************************************************************
-                                             WORD VALIDATION
+                                                            WORD VALIDATION
 *********************************************************************************************************************************/
-static FILE *fp;
 
 /**
  * Checks if a word exists in the dictionary.
@@ -644,6 +689,11 @@ bool wordExists(Letter word[], int n)
     return exists;
 }
 
+/**
+ * Opens the dictionary file.
+ *
+ * @returns -1 if fails to open file, 0 if succesful.
+ */
 int openFile()
 {
     fp = fopen("dict.txt", "r");
@@ -655,6 +705,11 @@ int openFile()
     return 0;
 }
 
+/**
+ * Closes the file if it is open.
+ *
+ * @returns None
+ */
 void closeFile()
 {
     if (fp)
@@ -662,11 +717,11 @@ void closeFile()
         fclose(fp);
     }
 }
+
 /***********************************************************************************************************************
-                                        POSITION VALIDATION
+                                                            POSITION VALIDATION
 *************************************************************************************************************************/
-Letter OldBoard[16][16];
-// saves the board's state for use in case of validation errors
+
 /**
  * Saves the current state of the board.
  *
@@ -682,6 +737,7 @@ void saveState()
         }
     }
 }
+
 /**
  * Restores the state of the board to the previous state.
  *
@@ -697,6 +753,7 @@ void restoreState()
         }
     }
 }
+
 /**
  * Checks if the word is out of bounds.
  *
@@ -805,6 +862,7 @@ int validatePosition(Word w)
     printf("invalid word positioning. Try again\n");
     return 0;
 }
+
 /**
  * Validates the position of the first word of the game.
  *
@@ -836,11 +894,7 @@ int validateFirstWord(Word w)
         break;
     }
 }
-/************************************************************************************************************************
-                                                       PLAY SCRABBLE
-***************************************************************************************************************************/
-int tempTileptr;
-Letter tempTileArray[7];
+
 /**
  * Saves the tiles of a player.
  *
@@ -856,6 +910,7 @@ void saveTiles(int player)
         tempTileArray[i] = playerArr[player].tiles[i];
     }
 }
+
 /**
  * Restores the tiles of a player.
  *
@@ -871,6 +926,11 @@ void restoreTiles(int player)
         playerArr[player].tiles[i] = tempTileArray[i];
     }
 }
+
+/************************************************************************************************************************
+                                                            PLAY SCRABBLE
+***************************************************************************************************************************/
+
 /**
  * Checks if the game is over.
  *
@@ -895,6 +955,7 @@ int gameOver(int noPlayers)
     }
     return 1;
 }
+
 /**
  * Displays the points of each player.
  *
@@ -932,6 +993,7 @@ void displayPoints(int noPlayers)
         reset();
     }
 }
+
 /**
  * Initializes the game.
  *
@@ -961,6 +1023,7 @@ void initGame(int noPlayers)
     }
     system("CLS");
 }
+
 /**
  * Declares the winner of the game.
  *
@@ -968,11 +1031,11 @@ void initGame(int noPlayers)
  *
  * @returns None
  */
-void declareWinner(int player)
+void declareWinner(int noPlayers)
 {
     int max = -1;
     int x = 0;
-    for (int i = 0; i < player; i++)
+    for (int i = 0; i < noPlayers; i++)
     {
         if (playerArr[i].total_points > max)
         {
@@ -982,8 +1045,9 @@ void declareWinner(int player)
     }
     yellow();
     printf("\t\t\t\t\tTHE WINNER IS: %s", playerArr[x].name);
-    displayPoints(player);
+    displayPoints(noPlayers);
 }
+
 /**
  * Plays scrabble.
  *
@@ -1112,24 +1176,4 @@ void playScrabble(int noPlayers)
         closeFile();
         reset();
     } while (gameOver(noPlayers) != 0);
-}
-
-/***********************************************************************************************************************
-                                                            MAIN
-*************************************************************************************************************************/
-/**
- * Plays scrabble with p players.
- *
- * @param p The number of players.
- *
- * @returns None
- */
-int main()
-{
-    printf("how many players would like to play?\n");
-    int p;
-    scanf_s("%d", &p);
-    playScrabble(p);
-    declareWinner(p);
-    return 0;
 }

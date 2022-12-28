@@ -47,7 +47,7 @@ Letter tempTileArray[7];
 int main()
 {
     int p;
-    printf("how many players would like to play?\n");
+    printf("How many players would like to play?\n");
     scanf_s("%d", &p);
     playScrabble(p);
     declareWinner(p);
@@ -267,7 +267,7 @@ Word getWord(int i)
         scanf_s("%c", &coordinate);
         coordinate = tolower(coordinate);
         if (coordinate < 'a' || coordinate > 'z')
-            printf("invalid coordinate. re-enter please\n");
+            printf("Invalid coordinate. Re-enter please\n");
     } while (coordinate < 'a' || coordinate > 'z');
     word.x = coordinate - 96;
     do
@@ -277,7 +277,7 @@ Word getWord(int i)
         scanf_s("%c", &coordinate);
         coordinate = tolower(coordinate);
         if (coordinate < 'a' || coordinate > 'z')
-            printf("invalid coordinate. re-enter please\n");
+            printf("Invalid coordinate. Re-enter please\n");
     } while (coordinate < 'a' || coordinate > 'z');
     word.y = coordinate - 96;
     do
@@ -285,7 +285,7 @@ Word getWord(int i)
         printf("Enter 0 for down, 1 for right: ");
         scanf_s("%d", &word.dire);
         if (word.dire != 0 && word.dire != 1)
-            printf("invalid direction. retry\n");
+            printf("Invalid direction. Retry\n");
     } while (word.dire != 0 && word.dire != 1);
     return word;
 }
@@ -422,20 +422,12 @@ int enterWordOnBoard(Word w)
 
             k++;
         }
-        // printf("CurrentWord Right: ");
-        // for (int test = 0; test < k; test++)
-        // {
-        //     printf("%c", CurrentWord[test].c);
-        // }
-        // printf("\n");
         exists = wordExists(CurrentWord, 16);
         if (!exists)
         {
             return 0;
         }
         TotalPoints = TotalPoints + calculatePointsWord(CurrentWord, k);
-        // CurrentWord is Correct here
-
         break;
 
     case DOWN:
@@ -490,12 +482,7 @@ int enterWordOnBoard(Word w)
         {
             return 0;
         }
-        // printf("CurrentWord down: ");
-        // for (int test = 0; test < k; test++)
-        // {
-        //     printf("%c", CurrentWord[test].c);
-        // }
-        // printf("\n");
+
         TotalPoints = TotalPoints + calculatePointsWord(CurrentWord, k);
         break;
     }
@@ -650,20 +637,16 @@ bool wordExists(Letter word[], int n)
     printf("Word in word exists: ");
     for (int ks = 0; ks < n; ks++)
     {
-        // printf("%c", CurrentSubWord[ks].c);
         w[ks] = word[ks].c;
         printf("%c", w[ks]);
     }
     printf("\n");
     strtok(w, "\n");
     // w[strcspn(w, "\n")] = 0;
-    // strcpy(w, word);
     while (fgets(temp, 512, fp) != NULL)
     {
-        // This also works to remove \n from the end of the word
         // temp[strcspn(temp, "\n")] = 0;
         strtok(temp, "\n");
-        // remove \n
         if ((strstr(temp, w)) != NULL)
         {
             int res = strcmp(temp, w);
@@ -779,7 +762,7 @@ int outOfBounds(Word w)
             }
             if (w.x + j > 15)
             {
-                printf("out of bounds\n");
+                printf("Out of bounds\n");
                 restoreState();
                 return 0;
             }
@@ -800,7 +783,7 @@ int outOfBounds(Word w)
             }
             if (w.y + j > 15)
             {
-                printf("out of bounds\n");
+                printf("Out of bounds\n");
                 restoreState();
                 return 0;
             }
@@ -854,12 +837,12 @@ int validatePosition(Word w)
                 return 1;
             break;
         default:
-            printf("invalid word positioning. Try again\n");
+            printf("Invalid word positioning. Try again\n");
             return 0;
             break;
         }
     }
-    printf("invalid word positioning. Try again\n");
+    printf("Invalid word positioning. Try again\n");
     return 0;
 }
 
@@ -880,7 +863,7 @@ int validateFirstWord(Word w)
             if (w.x + i == 8 && w.y == 8)
                 return 1;
         }
-        printf("invalid first word positioning. Try again\n");
+        printf("Invalid first word positioning. Try again\n");
         return 0;
         break;
     case DOWN:
@@ -889,7 +872,7 @@ int validateFirstWord(Word w)
             if (w.x == 8 && w.y + i == 8)
                 return 1;
         }
-        printf("invalid first word positioning. Try again\n");
+        printf("Invalid first word positioning. Try again\n");
         return 0;
         break;
     }
@@ -1147,8 +1130,6 @@ void playScrabble(int noPlayers)
             if (wExists == 0)
             {
                 restoreState();
-                printf("incorrect word. enter again\n");
-                // w = getWord(1);
                 for (int i = 0; i < k; i++)
                 {
                     CurrentWord[i].c = '\0';
@@ -1162,8 +1143,6 @@ void playScrabble(int noPlayers)
 
             playerArr[i].total_points += TotalPoints;
             TotalPoints = 0;
-
-            // system("CLS");
         }
         int skipTotal = 0;
         for (int i = 0; i < noPlayers; i++)

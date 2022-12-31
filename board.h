@@ -1,5 +1,5 @@
 #pragma once
-#include "defs.h"
+#include "definitions.h"
 #include "colors.h"
 /**
  * Initializes the board according to the official scrabble rules.

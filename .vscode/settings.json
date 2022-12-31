@@ -2,7 +2,7 @@
   "files.associations": {
     "*.ejs": "html",
     "*html": "html",
-    "defs.h": "c",
+    "definitions.h": "c",
     "board.h": "c"
   }
 }

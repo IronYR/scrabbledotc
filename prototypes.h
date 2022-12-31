@@ -3,6 +3,10 @@
 /*******************************************************************************************************************************************
                                                             Function Prototypes
 ********************************************************************************************************************************************/
+void initializeBoard(Letter board[16][16]);
+void displayBoard(Letter board[16][16]);
+void initializeTileBag(Letter TileBag[100], int NumTiles);
+
 int calculatePointsWord(Letter word[], int length);
 void resetFlags();
 

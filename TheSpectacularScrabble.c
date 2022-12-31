@@ -26,7 +26,7 @@ int NumTiles = TILE_BAG_SIZE;
  *
  * @param p The number of players.
  *
- * @returns None
+ * @returns 0
  */
 int main()
 {
@@ -638,20 +638,17 @@ bool wordExists(Letter word[], int n)
         printf("%c", w[ks]);
     }
     printf("\n");
-    strtok(w, "\n");
-    // w[strcspn(w, "\n")] = 0;
+    // strtok(w, "\n");
+    w[strcspn(w, "\n")] = 0;
     while (fgets(temp, 512, fp) != NULL)
     {
-        // temp[strcspn(temp, "\n")] = 0;
-        strtok(temp, "\n");
+        temp[strcspn(temp, "\n")] = 0;
+        // strtok(temp, "\n");
         if ((strstr(temp, w)) != NULL)
         {
             int res = strcmp(temp, w);
             if (res == 0)
             {
-                printf("A match found on line: %d\n", line_num);
-                printf("\n%s\n", temp);
-                printf("A valid word\n");
                 find_result++;
                 line_num++;
                 exists = true;
@@ -663,7 +660,7 @@ bool wordExists(Letter word[], int n)
 
     if (find_result == 0)
     {
-        printf("\nIncorrect word. Enter a valid word\n");
+        printf("\n%s is an incorrect word. Enter a valid word\n", w);
     }
 
     return exists;
@@ -676,7 +673,18 @@ bool wordExists(Letter word[], int n)
  */
 int openFile()
 {
-    fp = fopen("dict.txt", "r");
+    char fName[20] = "dict.txt";
+    // gcc
+    if ((fp = fopen(fName, "r")) == NULL)
+    {
+        return (-1);
+    }
+
+    // Visual Studio users
+    // if ((fopen_s(&fp, fName, "r")) != NULL)
+    // {
+    //     return (-1);
+    // }
     if (fp == NULL)
     {
         perror("Error opening file");
@@ -1138,6 +1146,7 @@ void playScrabble(int noPlayers)
                 }
                 k = 0;
                 restoreStateTiles(i);
+                closeFile();
                 goto play;
             }
             printf("\n");

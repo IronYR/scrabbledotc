@@ -16,7 +16,7 @@ int openFile()
         return (-1);
     }
 
-    // Visual Studio users
+    // Visual Studio
     // if ((fopen_s(&fp, fName, "r")) != NULL)
     // {
     //     return (-1);

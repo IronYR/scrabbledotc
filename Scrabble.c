@@ -6,9 +6,9 @@
 #include <ctype.h>
 
 #include "definitions.h" // contains type definitions, enums, and macros
+#include "prototypes.h"  // contains function prototypes
 #include "colors.h"      // contains the different colors
 #include "board.h"       // contains functions related to the board
-#include "prototypes.h"  // contains function prototypes
 #include "file.h"        // contains functions related to file operations
 #include "validation.h"  // contains functions related to word and tile validation
 #include "playgame.h"    // contains functions related to playing the game
